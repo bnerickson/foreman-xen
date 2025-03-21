@@ -16,11 +16,13 @@ module ForemanXen
     end
 
     initializer 'foreman_xen.register_plugin', :before => :finisher_hook do |app|
-      Foreman::Plugin.register :foreman_xen do
-        requires_foreman '>= 1.20'
-        # Register xen compute resource in foreman
-        compute_resource ForemanXen::Xenserver
-        parameter_filter(ComputeResource, :uuid, :iso_library_mountpoint)
+      app.reloader.to_prepare do
+        Foreman::Plugin.register :foreman_xen do
+          requires_foreman '>= 1.20'
+          # Register xen compute resource in foreman
+          compute_resource ForemanXen::Xenserver
+          parameter_filter(ComputeResource, :uuid, :iso_library_mountpoint)
+        end
       end
     end
 
